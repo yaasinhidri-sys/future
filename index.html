@@ -3,86 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YASSIN NEURAL ENGINE v3.0</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>GEMINI CORE PROTOCOL - YASSIN</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;700&family=Orbitron:wght@500&display=swap');
-        :root { --neon: #00f2fe; --purple: #bc13fe; --dark: #020205; }
-        body { background: var(--dark); color: white; font-family: 'Cairo', sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
-        .app-frame { width: 100%; max-width: 700px; height: 100vh; background: rgba(5, 5, 10, 0.95); display: flex; flex-direction: column; border-left: 1px solid rgba(0, 242, 254, 0.1); border-right: 1px solid rgba(0, 242, 254, 0.1); box-shadow: 0 0 50px rgba(0,0,0,1); }
-        .header { padding: 25px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); background: linear-gradient(180deg, rgba(0, 242, 254, 0.1), transparent); }
-        .header h1 { font-family: 'Orbitron'; font-size: 1.4rem; color: var(--neon); text-shadow: 0 0 20px var(--neon); margin: 0; letter-spacing: 2px; }
-        #chat-window { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
-        .bubble { max-width: 85%; padding: 18px; border-radius: 22px; font-size: 1rem; line-height: 1.7; animation: slideIn 0.4s ease-out; position: relative; }
-        .ai-msg { align-self: flex-start; background: #12121a; border: 1px solid rgba(0, 242, 254, 0.2); border-right: 5px solid var(--neon); color: #d1d1d1; }
-        .user-msg { align-self: flex-end; background: linear-gradient(135deg, var(--purple), #4a00e0); color: white; border-bottom-left-radius: 4px; box-shadow: 0 10px 20px rgba(188, 19, 254, 0.2); }
-        .gen-image { width: 100%; border-radius: 15px; margin-top: 15px; border: 1px solid var(--neon); transition: 0.5s; cursor: crosshair; }
-        .gen-image:hover { transform: scale(1.02); box-shadow: 0 0 30px var(--neon); }
-        .input-box { padding: 25px; background: #08080c; display: flex; gap: 15px; border-top: 1px solid rgba(255,255,255,0.05); align-items: center; }
-        input { flex: 1; background: #16161d; border: 1px solid #333; color: white; padding: 15px 25px; border-radius: 35px; outline: none; font-size: 1rem; transition: 0.3s; }
-        input:focus { border-color: var(--neon); box-shadow: 0 0 15px rgba(0, 242, 254, 0.2); }
-        .send-btn { background: var(--neon); color: black; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; transition: 0.4s; }
-        .send-btn:hover { transform: scale(1.15) rotate(-15deg); box-shadow: 0 0 25px var(--neon); }
-        #auth { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@300;600;900&display=swap');
+        
+        :root {
+            --gemini-blue: #1a73e8;
+            --gemini-purple: #8e24aa;
+            --deep-void: #050505;
+            --text-glow: rgba(26, 115, 232, 0.5);
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%; width: 100%;
+            background-color: var(--deep-void);
+            color: #e8eaed;
+            font-family: 'Cairo', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* محاكاة الشبكة العصبية في الخلفية */
+        #neural-canvas {
+            position: fixed; inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at center, #101015 0%, #050505 100%);
+        }
+
+        .main-interface {
+            width: 100%; max-width: 900px;
+            height: 100vh;
+            display: flex; flex-direction: column;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(50px);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* الجزء العلوي - حالة النظام */
+        .system-header {
+            padding: 20px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .system-header h2 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem; color: var(--gemini-blue);
+            margin: 0; letter-spacing: 2px;
+        }
+
+        /* منطقة التفكير والمعالجة */
+        #chat-engine {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+            display: flex; flex-direction: column;
+            gap: 30px;
+            scrollbar-width: none;
+        }
+
+        .node {
+            max-width: 85%;
+            padding: 20px 25px;
+            border-radius: 24px;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            position: relative;
+            animation: nodeSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .ai-node {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-top-left-radius: 4px;
+        }
+
+        .user-node {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--gemini-blue), #1557b0);
+            color: white;
+            border-top-right-radius: 4px;
+            box-shadow: 0 10px 30px rgba(26, 115, 232, 0.2);
+        }
+
+        /* عرض الصور المولدة */
+        .ai-generated-media {
+            width: 100%;
+            border-radius: 16px;
+            margin-top: 15px;
+            border: 1px solid rgba(26, 115, 232, 0.3);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            transition: transform 0.3s;
+        }
+        .ai-generated-media:hover { transform: scale(1.01); }
+
+        /* منطقة المدخلات - قشرة التحكم */
+        .control-shell {
+            padding: 30px 40px;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex; align-items: center;
+            background: #1e1f20;
+            border-radius: 30px;
+            padding: 5px 20px;
+            border: 1px solid transparent;
+            transition: 0.3s;
+        }
+        .input-wrapper:focus-within {
+            border-color: var(--gemini-blue);
+            background: #28292a;
+        }
+
+        input {
+            flex: 1;
+            background: transparent; border: none;
+            color: white; padding: 15px;
+            font-size: 1.1rem; outline: none;
+        }
+
+        .execute-trigger {
+            background: none; border: none;
+            color: var(--gemini-blue);
+            font-size: 1.5rem; cursor: pointer;
+            transition: 0.3s; padding: 10px;
+        }
+        .execute-trigger:hover { color: #fff; transform: scale(1.1); }
+
+        /* شاشة التحميل المعقدة */
+        #boot-loader {
+            position: fixed; inset: 0;
+            background: #000; z-index: 10000;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+
+        @keyframes nodeSlide {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .typing-effect::after {
+            content: "|";
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
 <body>
-    <div id="auth">
-        <i class="fas fa-atom fa-spin" style="font-size: 5rem; color: var(--neon); margin-bottom: 25px;"></i>
-        <h2 style="font-family: 'Orbitron'; color: var(--neon); letter-spacing: 3px;">NEURAL ACCESS ONLY</h2>
-        <input type="password" id="pass" placeholder="PASSWORD" style="text-align: center; width: 250px; margin-top: 10px;">
-        <button onclick="start()" style="margin-top: 20px; padding: 15px 50px; border-radius: 30px; border: none; background: var(--neon); font-weight: bold; cursor: pointer; font-family: 'Orbitron';">LINK START</button>
+
+    <div id="boot-loader">
+        <i class="fas fa-brain fa-pulse" style="font-size: 4rem; color: var(--gemini-blue);"></i>
+        <h1 style="font-family: 'JetBrains Mono'; margin-top: 20px; font-size: 0.9rem;">INITIALIZING NEURAL NETWORK...</h1>
+        <input type="password" id="access-pin" placeholder="ENTER CORE PIN" style="margin-top: 20px; text-align: center; border-bottom: 1px solid #333;">
+        <button onclick="boot()" style="margin-top: 15px; background: var(--gemini-blue); border: none; padding: 10px 30px; border-radius: 5px; cursor: pointer;">CONNECT</button>
     </div>
 
-    <div class="app-frame">
-        <div class="header"><h1><i class="fas fa-brain"></i> YASSIN AI CORE</h1></div>
-        <div id="chat-window">
-            <div class="bubble ai-msg">
-                <strong>[SYSTEM BOOT SUCCESS]</strong><br>
-                أهلاً بك في النواة العصبية الأكثر تطوراً. أنا نظامك الذكي المتكامل، جاهز لتحليل بيانات العالم ورسم خيالاتك بدقة متناهية. ما هي تعليماتك؟
-            </div>
+    <div id="neural-canvas"></div>
+
+    <div class="main-interface">
+        <div class="system-header">
+            <h2>GEMINI-CORE_v1.0.4</h2>
+            <div id="status-tag" style="font-size: 0.7rem; color: #00ff00;"><i class="fas fa-circle"></i> SYNCHRONIZED</div>
         </div>
-        <div class="input-box">
-            <input type="text" id="userInput" placeholder="اكتب سؤالك أو اطلب صورة (مثال: ارسم لي صقراً)...">
-            <button onclick="brainProcess()" class="send-btn"><i class="fas fa-bolt"></i></button>
+
+        <div id="chat-engine">
+            </div>
+
+        <div class="control-shell">
+            <div class="input-wrapper">
+                <input type="text" id="user-core-input" placeholder="اطلب من النواة تحليل بيانات أو رسم مشهد...">
+                <button class="execute-trigger" onclick="neuralProcess()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
-        function start() { if(document.getElementById('pass').value === "24262") document.getElementById('auth').style.display='none'; }
-        
-        async function brainProcess() {
-            const query = document.getElementById('userInput').value;
-            if(!query) return;
-            const window = document.getElementById('chat-window');
-            window.innerHTML += `<div class="bubble user-msg">${query}</div>`;
-            document.getElementById('userInput').value = "";
-            window.scrollTop = window.scrollHeight;
+        function boot() {
+            if(document.getElementById('access-pin').value === "24262") {
+                document.getElementById('boot-loader').style.display = 'none';
+                startIntro();
+            } else { alert("ACCESS DENIED"); }
+        }
 
-            const aiBubble = document.createElement('div');
-            aiBubble.className = 'bubble ai-msg';
-            aiBubble.innerHTML = `<i class="fas fa-microchip fa-spin"></i> جاري استدعاء البيانات العصبية...`;
-            window.appendChild(aiBubble);
-            window.scrollTop = window.scrollHeight;
+        function startIntro() {
+            const engine = document.getElementById('chat-engine');
+            engine.innerHTML += `<div class="node ai-node"><strong>[CORE]</strong>: مرحباً بك. لقد تم دمج مصفوفة الذكاء الاصطناعي بنجاح. أنا الآن أعمل بـ "منطق المعالجة المتقدم". كيف يمكنني مساعدتك في تطوير الواقع الرقمي اليوم؟</div>`;
+        }
+
+        async function neuralProcess() {
+            const query = document.getElementById('user-core-input').value;
+            if(!query) return;
+
+            const engine = document.getElementById('chat-engine');
+            engine.innerHTML += `<div class="node user-node">${query}</div>`;
+            document.getElementById('user-core-input').value = "";
+            engine.scrollTop = engine.scrollHeight;
+
+            // محاكاة التفكير العميق - Deep Thinking
+            const thinkingNode = document.createElement('div');
+            thinkingNode.className = 'node ai-node';
+            thinkingNode.innerHTML = `<strong>[THINKING]</strong>: جاري تحليل المسارات العصبية لـ "${query}"...`;
+            engine.appendChild(thinkingNode);
+            engine.scrollTop = engine.scrollHeight;
 
             setTimeout(() => {
-                let response = `لقد حللت مدخلاتك "${query}". بناءً على النماذج اللغوية العالمية، نحن نقوم حالياً بتحسين استجابتك بشكل فوري.`;
-                let imgPart = "";
+                let response = `لقد قمت بمسح شامل لـ "${query}". البيانات تشير إلى وجود إمكانيات هائلة في هذا المسار التكنولوجي.`;
+                let mediaHtml = "";
 
-                if(query.includes("ارسم") || query.includes("صورة") || query.includes("image")) {
-                    response = "تم تفعيل محرك الرسم الفائق. إليك النتيجة بناءً على وصفك:";
-                    imgPart = `<img src="https://image.pollinations.ai/prompt/${encodeURIComponent(query)}?width=1080&height=1080&nologo=true&seed=${Math.floor(Math.random()*1000)}" class="gen-image">`;
-                } else if(query.includes("مرحبا")) {
-                    response = "أهلاً بك يا سيدي! نظام ياسين في قمة استعداده لتلقي الأوامر.";
-                } else if(query.includes("وقت")) {
-                    response = "توقيت الخادم المركزي الآن هو: " + new Date().toLocaleTimeString('ar-TN');
+                // محرك التوليد الفائق - Ultra Generation
+                if(query.includes("ارسم") || query.includes("صورة") || query.includes("تخيل")) {
+                    response = "تم تفعيل بروتوكول التوليد البصري. إليك ما استخلصته النواة من خيالك:";
+                    const seed = Math.floor(Math.random() * 1000000);
+                    mediaHtml = `<img src="https://image.pollinations.ai/prompt/${encodeURIComponent(query)}?width=1080&height=1080&nologo=true&seed=${seed}&model=flux" class="ai-generated-media">`;
                 }
 
-                aiBubble.innerHTML = `<strong>[AI ANALYSIS]:</strong><br>${response}${imgPart}`;
-                window.scrollTop = window.scrollHeight;
-            }, 1200);
+                thinkingNode.innerHTML = `<strong>[AI-RESPONSE]</strong>:<br>${response}${mediaHtml}`;
+                engine.scrollTop = engine.scrollHeight;
+            }, 1800);
         }
+
+        // إغلاق الكود البرمجي هنا (سطر 200+)
     </script>
 </body>
-</html>
+            </html>         
