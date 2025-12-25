@@ -3,31 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FUTURE AI SYSTEM</title>
+    <title>FUTURE AI SYSTEM PRO</title>
     <style>
         :root { --neon: #00f2fe; --bg: #050505; }
         body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .glass-box { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid var(--neon); padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 0 20px var(--neon); width: 85%; max-width: 400px; }
-        h1 { color: var(--neon); text-shadow: 0 0 10px var(--neon); margin-bottom: 20px; }
-        input { background: #000; border: 1px solid #333; color: white; padding: 12px; border-radius: 8px; width: 100%; outline: none; margin-bottom: 15px; box-sizing: border-box; text-align: center; }
-        button { background: var(--neon); color: black; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
-        button:hover { box-shadow: 0 0 15px var(--neon); transform: scale(1.02); }
+        .glass-box { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid var(--neon); padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 0 20px var(--neon); width: 90%; max-width: 450px; }
+        h1 { color: var(--neon); text-shadow: 0 0 10px var(--neon); font-size: 1.5rem; }
+        #display-text { min-height: 60px; margin: 20px 0; color: #fff; font-weight: bold; line-height: 1.6; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        input { background: #000; border: 1px solid var(--neon); color: white; padding: 12px; border-radius: 8px; width: 100%; outline: none; box-sizing: border-box; margin-bottom: 10px; }
+        button { background: var(--neon); color: black; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
         #ai-interface { display: none; }
     </style>
 </head>
 <body>
+
     <div id="login-screen" class="glass-box">
-        <h1>FUTURE AI</h1>
-        <p>نظام الإدراك الذكي</p>
-        <input type="password" id="pin" placeholder="كود الوصول">
-        <button onclick="login()">دخول</button>
+        <h1>نظام FUTURE AI</h1>
+        <input type="password" id="pin" placeholder="أدخل كود الوصول">
+        <button onclick="login()">تفعيل النظام</button>
     </div>
 
     <div id="ai-interface" class="glass-box">
         <h1>FUTURE ACTIVE</h1>
-        <p id="status" style="color: var(--neon);">[AI]: المساعد الذكي جاهز للأوامر..</p>
-        <input type="text" id="userInput" placeholder="اسأل النظام...">
-        <button onclick="ask()">إرسال</button>
+        <div id="display-text">[AI]: النظام متصل.. بانتظار أوامرك يا سيدي.</div>
+        <input type="text" id="userInput" placeholder="اسأل عن أي شيء...">
+        <button onclick="processAI()">إرسال الأمر</button>
     </div>
 
     <script>
@@ -35,14 +35,31 @@
             if(document.getElementById('pin').value === "24262") {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('ai-interface').style.display = 'block';
-            } else { alert("كود خاطئ!"); }
+            } else { alert("وصول مرفوض!"); }
         }
-        function ask() {
-            const input = document.getElementById('userInput').value;
-            if(input) {
-                document.getElementById('status').innerText = "[AI]: جاري تحليل " + input + "...";
+
+        function processAI() {
+            const input = document.getElementById('userInput').value.toLowerCase();
+            const display = document.getElementById('display-text');
+            
+            display.innerText = "جاري الاتصال بقاعدة البيانات العالمية...";
+            
+            setTimeout(() => {
+                if(input.includes("مرحبا") || input.includes("هلا")) {
+                    display.innerText = "[AI]: أهلاً بك! أنا نظام FUTURE الذكي، كيف يمكنني خدمتك اليوم؟";
+                } else if(input.includes("من انت") || input.includes("اسمك")) {
+                    display.innerText = "[AI]: أنا المساعد الرقمي المتطور FUTURE، صممني المبدع ياسين لأكون عقلك الثاني.";
+                } else if(input.includes("الوقت") || input.includes("الساعة")) {
+                    display.innerText = "[AI]: الساعة الآن هي " + new Date().toLocaleTimeString('ar-EG') + " بتوقيت نظامك المحلي.";
+                } else if(input.includes("العالم") || input.includes("اخبار")) {
+                    display.innerText = "[AI]: أقوم الآن بمسح الشبكة العالمية.. العالم يتطور بسرعة مذهلة في مجالات التكنولوجيا!";
+                } else if(input.includes("ذكاء")) {
+                    display.innerText = "[AI]: الذكاء الاصطناعي هو المستقبل، وأنا هنا لأثبت لك ذلك.";
+                } else {
+                    display.innerText = "[AI]: لقد قمت بتحليل '" + input + "'.. سأقوم بتنفيذ هذا الأمر في التحديث القادم!";
+                }
                 document.getElementById('userInput').value = "";
-            }
+            }, 1000);
         }
     </script>
 </body>
