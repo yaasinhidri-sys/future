@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FUTURE AI SYSTEM</title>
+    <style>
+        :root { --neon: #00f2fe; --bg: #050505; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .glass-box { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid var(--neon); padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 0 20px var(--neon); width: 80%; max-width: 400px; }
+        h1 { color: var(--neon); text-shadow: 0 0 10px var(--neon); margin-bottom: 20px; }
+        input { background: #000; border: 1px solid #333; color: white; padding: 12px; border-radius: 8px; width: 100%; outline: none; margin-bottom: 10px; box-sizing: border-box; }
+        button { background: var(--neon); color: black; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+        button:hover { box-shadow: 0 0 15px var(--neon); transform: scale(1.02); }
+        #ai-interface { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen" class="glass-box">
+        <h1>FUTURE AI</h1>
+        <p style="opacity: 0.8;">أدخل كود الوصول لتفعيل النظام</p>
+        <input type="password" id="pin" placeholder="****">
+        <button onclick="login()">دخول</button>
+    </div>
+
+    <div id="ai-interface" class="glass-box">
+        <h1>FUTURE ACTIVE</h1>
+        <p id="ai-status" style="color: var(--neon);">[AI]: المساعد الذكي متصل وجاهز...</p>
+        <input type="text" id="userInput" placeholder="اسأل النظام...">
+        <button onclick="ask()">إرسال الأمر</button>
+    </div>
+
+    <script>
+        function login() {
+            const val = document.getElementById('pin').value;
+            if(val === "24262") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('ai-interface').style.display = 'block';
+            } else {
+                alert("كود خاطئ! تم رصد محاولة غير مصرح بها.");
+            }
+        }
+
+        function ask() {
+            const input = document.getElementById('userInput').value;
+            const status = document.getElementById('ai-status');
+            if(input) {
+                status.innerText = "[AI]: جاري تحليل البيانات لـ " + input + "...";
+                setTimeout(() => {
+                    status.innerText = "[AI]: النظام يعمل بأقصى طاقة لتلبية طلبك.";
+                }, 1500);
+                document.getElementById('userInput').value = "";
+            }
+        }
+    </script>
+</body>
+</html>
