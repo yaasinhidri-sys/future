@@ -2,153 +2,136 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>YASSIN OMNI-SYSTEM | PRO VERSION</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YASSIN AI | SMART INTERFACE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root { --neon: #00f2fe; --bg: #020205; --key-bg: #11111d; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        
-        .sidebar { width: 300px; background: #08080c; border-left: 1px solid #1a1a2e; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        #camera-container { width: 100%; border-radius: 12px; border: 2px solid #222; overflow: hidden; position: relative; background: #000; height: 200px; }
-        #webcam { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); display: none; }
-        .cam-placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #444; }
-        
-        .btn-control { background: #1a1a35; color: var(--neon); border: 1px solid var(--neon); padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        .btn-control.active { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
+        :root { --neon: #00f2fe; --bg: #050508; --key-h: 45px; }
+        * { box-sizing: border-box; touch-action: manipulation; }
+        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-        #chat-flow { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 15px; background: radial-gradient(circle, #0d0d25 0%, #020205 100%); }
-        .bubble { max-width: 85%; padding: 18px; border-radius: 20px; animation: slideIn 0.3s; line-height: 1.7; }
-        .ai { background: rgba(0, 242, 254, 0.05); border: 1px solid rgba(0, 242, 254, 0.2); align-self: flex-start; }
+        /* منطقة الشات - مرنة لتترك مساحة للكيبورد */
+        #chat-flow { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background: radial-gradient(circle at top, #0d0d25, #050508); }
+        .bubble { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 0.9rem; line-height: 1.4; animation: pop 0.3s; }
+        .ai { background: rgba(0, 242, 254, 0.1); border: 1px solid var(--neon); align-self: flex-start; }
         .user { background: var(--neon); color: #000; font-weight: bold; align-self: flex-end; }
 
-        .input-hub { background: #000; padding: 15px; display: flex; gap: 10px; border-top: 1px solid #1a1a2e; align-items: center; }
-        #masterInput { flex: 1; background: #0c0c15; border: 1px solid #222; color: var(--neon); padding: 15px; border-radius: 30px; outline: none; }
+        /* حاوية التحكم السفلية */
+        .bottom-section { background: #000; border-top: 1px solid #1a1a2e; padding: 5px; }
         
-        .voice-btn { background: #ff0055; border: none; width: 50px; height: 50px; border-radius: 50%; color: white; cursor: pointer; transition: 0.3s; }
-        .voice-btn.recording { animation: pulse 1s infinite; background: #ff0000; box-shadow: 0 0 20px #ff0000; }
+        /* شريط الإدخال */
+        .input-bar { display: flex; gap: 5px; padding: 5px; align-items: center; }
+        #masterInput { flex: 1; background: #111; border: 1px solid #333; color: var(--neon); padding: 10px; border-radius: 20px; outline: none; font-size: 0.9rem; height: 40px; }
+        .action-btn { border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .send-btn { background: var(--neon); color: #000; }
+        .mic-btn { background: #ff0055; color: #fff; }
 
-        .cyber-keyboard { background: rgba(5, 5, 10, 0.98); display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; padding: 10px; border-top: 2px solid var(--neon); }
-        .key { background: var(--key-bg); border: 1px solid #222; color: white; padding: 12px 2px; text-align: center; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: 0.1s; }
-        .key:active { background: var(--neon); color: #000; transform: scale(0.9); }
+        /* الكيبورد الخرافية - أبعاد قصيرة للهاتف */
+        .cyber-clavier { 
+            display: grid; 
+            grid-template-columns: repeat(10, 1fr); 
+            gap: 3px; 
+            padding: 5px; 
+            background: #08080c;
+        }
+        .key { 
+            background: #161625; 
+            color: #fff; 
+            height: var(--key-h); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 5px; 
+            font-size: 0.9rem; 
+            cursor: pointer;
+            transition: 0.1s;
+            border-bottom: 2px solid #000;
+        }
+        .key:active { background: var(--neon); color: #000; transform: scale(0.9); box-shadow: 0 0 10px var(--neon); }
+        .wide-key { grid-column: span 2; background: #22253d; font-size: 0.8rem; }
+        .space-key { grid-column: span 6; background: #222; }
 
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } }
+        @keyframes pop { from { opacity: 0; transform: scale(0.9); } }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <h3 style="color:var(--neon)"><i class="fas fa-shield-alt"></i> التحكم بالأجهزة</h3>
-        <div id="camera-container">
-            <video id="webcam" autoplay muted playsinline></video>
-            <div class="cam-placeholder" id="cam-text">الكاميرا مغلقة</div>
-        </div>
-        <button id="camToggle" class="btn-control" onclick="toggleCamera()">تفعيل الكاميرا</button>
-        <div class="info-panel" id="voice-status" style="font-size: 0.8rem; color: #888;">الميكروفون: جاهز</div>
-    </aside>
+    <div style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+        <button onclick="toggleCam()" class="action-btn" style="background: rgba(0,0,0,0.5); border: 1px solid var(--neon); color: var(--neon);"><i class="fas fa-video"></i></button>
+        <video id="v" style="display:none; width:80px; height:80px; border-radius:50%; object-fit:cover; margin-top:5px; border:2px solid var(--neon);" autoplay muted playsinline></video>
+    </div>
 
-    <main style="flex:1; display:flex; flex-direction:column;">
-        <div id="chat-flow">
-            <div class="bubble ai"><strong>[الوعي الشامل جاهز]</strong><br>تم دمج الكاميرا المتحكم بها والتحليل الصوتي. اضغط على الميكروفون للتحدث أو استخدم الـ Clavier.</div>
-        </div>
+    <div id="chat-flow">
+        <div class="bubble ai">أهلاً يا ياسين! تم ضبط الكيبورد لتناسب شاشة هاتفك تماماً. جرب الكتابة الآن.</div>
+    </div>
 
-        <div class="input-hub">
-            <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()"><i class="fas fa-microphone"></i></button>
+    <div class="bottom-section">
+        <div class="input-bar">
+            <button class="action-btn mic-btn" onclick="startVoice()"><i class="fas fa-microphone"></i></button>
             <input type="text" id="masterInput" placeholder="اكتب أو تحدث..." readonly>
-            <button onclick="executeOmni()" style="background:var(--neon); border:none; width:50px; height:50px; border-radius:50%; cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
+            <button class="action-btn send-btn" onclick="askAI()"><i class="fas fa-paper-plane"></i></button>
         </div>
 
-        <div class="cyber-keyboard" id="clavier">
-            <div class="key" onclick="press('أ')">أ</div><div class="key" onclick="press('ب')">ب</div><div class="key" onclick="press('ت')">ت</div><div class="key" onclick="press('ث')">ث</div><div class="key" onclick="press('ج')">ج</div><div class="key" onclick="press('ح')">ح</div><div class="key" onclick="press('خ')">خ</div><div class="key" onclick="press('د')">د</div><div class="key" onclick="press('ذ')">ذ</div><div class="key" onclick="press('ر')">ر</div>
-            <div class="key" onclick="press('ز')">ز</div><div class="key" onclick="press('س')">س</div><div class="key" onclick="press('ش')">ش</div><div class="key" onclick="press('ص')">ص</div><div class="key" onclick="press('ض')">ض</div><div class="key" onclick="press('ط')">ط</div><div class="key" onclick="press('ظ')">ظ</div><div class="key" onclick="press('ع')">ع</div><div class="key" onclick="press('غ')">غ</div><div class="key" onclick="press('ف')">ف</div>
-            <div class="key" style="grid-column: span 2" onclick="del()">حذف</div>
-            <div class="key" style="grid-column: span 6" onclick="press(' ')">SPACE</div>
-            <div class="key" style="grid-column: span 2" onclick="executeOmni()">إرسال</div>
+        <div class="cyber-clavier">
+            <div class="key" onclick="k('أ')">أ</div><div class="key" onclick="k('ب')">ب</div><div class="key" onclick="k('ت')">ت</div><div class="key" onclick="k('ث')">ث</div><div class="key" onclick="k('ج')">ج</div><div class="key" onclick="k('ح')">ح</div><div class="key" onclick="k('خ')">خ</div><div class="key" onclick="k('د')">د</div><div class="key" onclick="k('ذ')">ذ</div><div class="key" onclick="k('ر')">ر</div>
+            <div class="key" onclick="k('ز')">ز</div><div class="key" onclick="k('س')">س</div><div class="key" onclick="k('ش')">ش</div><div class="key" onclick="k('ص')">ص</div><div class="key" onclick="k('ض')">ض</div><div class="key" onclick="k('ط')">ط</div><div class="key" onclick="k('ظ')">ظ</div><div class="key" onclick="k('ع')">ع</div><div class="key" onclick="k('غ')">غ</div><div class="key" onclick="k('ف')">ف</div>
+            <div class="key wide-key" onclick="back()"><i class="fas fa-backspace"></i></div>
+            <div class="key space-key" onclick="k(' ')">SPACE</div>
+            <div class="key wide-key" onclick="askAI()">إرسال</div>
         </div>
-    </main>
+    </div>
 
     <script>
-        const API_KEY = "AIzaSyCnNPqeYw3Soht8PGKIMpv_IbruwUhQbJs";
-        let stream = null;
-        const video = document.getElementById('webcam');
-        const camBtn = document.getElementById('camToggle');
-        const input = document.getElementById('masterInput');
+        const KEY = "AIzaSyCnNPqeYw3Soht8PGKIMpv_IbruwUhQbJs";
+        const box = document.getElementById('chat-flow');
+        const inp = document.getElementById('masterInput');
 
-        // 📷 وظيفة التحكم بالكاميرا
-        async function toggleCamera() {
-            if (!stream) {
-                try {
-                    stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                    video.srcObject = stream;
-                    video.style.display = "block";
-                    document.getElementById('cam-text').style.display = "none";
-                    camBtn.innerText = "إغلاق الكاميرا";
-                    camBtn.classList.add('active');
-                } catch (e) { alert("يرجى السماح بالوصول للكاميرا"); }
+        function k(c) { inp.value += c; }
+        function back() { inp.value = inp.value.slice(0, -1); }
+
+        async function askAI() {
+            const txt = inp.value;
+            if(!txt) return;
+            box.innerHTML += `<div class="bubble user">${txt}</div>`;
+            inp.value = "";
+            box.scrollTop = box.scrollHeight;
+
+            const aiRes = document.createElement('div');
+            aiRes.className = "bubble ai";
+            aiRes.innerText = "جاري التفكير...";
+            box.appendChild(aiRes);
+
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${KEY}`, {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({contents: [{parts: [{text: txt}]}]})
+                });
+                const data = await res.json();
+                aiRes.innerHTML = data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
+            } catch (e) { aiRes.innerText = "خطأ في الاتصال."; }
+            box.scrollTop = box.scrollHeight;
+        }
+
+        let s = null;
+        async function toggleCam() {
+            const v = document.getElementById('v');
+            if(!s) {
+                s = await navigator.mediaDevices.getUserMedia({video:true});
+                v.srcObject = s; v.style.display = "block";
             } else {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
-                video.style.display = "none";
-                document.getElementById('cam-text').style.display = "block";
-                camBtn.innerText = "تفعيل الكاميرا";
-                camBtn.classList.remove('active');
+                s.getTracks().forEach(t => t.stop()); s = null; v.style.display = "none";
             }
         }
 
-        // 🎙️ وظيفة التحليل الصوتي (Speech to Text)
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecognition) {
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'ar-SA';
-            
-            recognition.onstart = () => {
-                document.getElementById('voiceBtn').classList.add('recording');
-                document.getElementById('voice-status').innerText = "الميكروفون: جاري الاستماع...";
-            };
-            
-            recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                input.value = transcript;
-                setTimeout(executeOmni, 500); // إرسال تلقائي بعد التحدث
-            };
-            
-            recognition.onend = () => {
-                document.getElementById('voiceBtn').classList.remove('recording');
-                document.getElementById('voice-status').innerText = "الميكروفون: جاهز";
-            };
-
-            window.toggleVoice = () => recognition.start();
-        } else {
-            document.getElementById('voiceBtn').style.display = "none";
-        }
-
-        function press(char) { input.value += char; }
-        function del() { input.value = input.value.slice(0, -1); }
-
-        async function executeOmni() {
-            const val = input.value;
-            if(!val) return;
-            const chat = document.getElementById('chat-flow');
-            chat.innerHTML += `<div class="bubble user">${val}</div>`;
-            input.value = "";
-            chat.scrollTop = chat.scrollHeight;
-
-            const aiLoading = document.createElement('div');
-            aiLoading.className = 'bubble ai';
-            aiLoading.innerHTML = `<i class="fas fa-robot"></i> جاري تحليل البيانات...`;
-            chat.appendChild(aiLoading);
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${API_KEY}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: val }] }] })
-                });
-                const data = await response.json();
-                aiLoading.innerHTML = `<strong>[G-PRO]</strong>:<br>${data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>')}`;
-            } catch (e) { aiLoading.innerHTML = "فشل في معالجة الطلب السحابي."; }
-            chat.scrollTop = chat.scrollHeight;
+        function startVoice() {
+            const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(Rec) {
+                const r = new Rec(); r.lang = 'ar-SA';
+                r.onresult = (e) => { inp.value = e.results[0][0].transcript; askAI(); };
+                r.start();
+            }
         }
     </script>
 </body>
-</html>
+    </html>
