@@ -2,104 +2,180 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>YASSIN OMNI-KEYBOARD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YASSIN AI | المساعد الذكي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root { --neon: #00f2fe; --bg: #050508; }
-        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        * { box-sizing: border-box; }
+        body { 
+            background-color: #050508; 
+            color: #ffffff; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+        }
+
+        /* رأس الصفحة */
+        header {
+            padding: 15px;
+            text-align: center;
+            background: #0a0a15;
+            border-bottom: 1px solid #1a1a2e;
+            color: #00f2fe;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
 
         /* منطقة المحادثة */
-        #chat-flow { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background: radial-gradient(circle at top, #0d0d25, #050508); }
-        .bubble { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 0.9rem; line-height: 1.4; }
-        .ai { background: rgba(0, 242, 254, 0.1); border: 1px solid var(--neon); align-self: flex-start; }
-        .user { background: var(--neon); color: #000; font-weight: bold; align-self: flex-end; }
+        #chat-window {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .msg {
+            max-width: 85%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            line-height: 1.6;
+            font-size: 1rem;
+            word-wrap: break-word;
+        }
+
+        .ai {
+            background: #161625;
+            border: 1px solid #1a1a35;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .user {
+            background: #00f2fe;
+            color: #000;
+            font-weight: bold;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
 
         /* منطقة الإدخال */
-        .bottom-ui { background: #000; border-top: 1px solid #222; }
-        .input-bar { display: flex; gap: 5px; padding: 10px; align-items: center; }
-        #masterInput { flex: 1; background: #111; border: 1px solid #333; color: var(--neon); padding: 10px; border-radius: 20px; outline: none; font-size: 1rem; }
-
-        /* الكيبورد المدمجة - أبعاد مريحة للهاتف */
-        .cyber-clavier { 
-            display: grid; 
-            grid-template-columns: repeat(10, 1fr); 
-            gap: 4px; 
-            padding: 8px; 
+        .input-area {
             background: #0a0a15;
-            border-top: 1px solid var(--neon);
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #1a1a2e;
         }
-        .key { 
-            background: #1a1a2e; 
-            color: #fff; 
-            height: 45px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            border-radius: 6px; 
-            font-size: 1rem; 
+
+        input {
+            flex: 1;
+            background: #1a1a2e;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 30px;
+            outline: none;
+            font-size: 16px;
+        }
+
+        input:focus {
+            border-color: #00f2fe;
+        }
+
+        button {
+            background: #00f2fe;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             cursor: pointer;
-            border-bottom: 2px solid #000;
-            user-select: none;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: 0.3s;
         }
-        .key:active { background: var(--neon); color: #000; transform: scale(0.9); }
-        .wide { grid-column: span 2; background: #2a2a4a; font-size: 0.8rem; }
-        .space { grid-column: span 6; background: #222; }
+
+        button:active {
+            transform: scale(0.9);
+        }
+
+        /* إخفاء التمرير */
+        #chat-window::-webkit-scrollbar { width: 5px; }
+        #chat-window::-webkit-scrollbar-thumb { background: #1a1a35; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="chat-flow">
-        <div class="bubble ai">الـ Clavier عادت يا ياسين! استخدم الأزرار بالأسفل للكتابة مباشرة.</div>
+    <header>YASSIN AI SYSTEM</header>
+
+    <div id="chat-window">
+        <div class="msg ai">أهلاً بك يا ياسين في نظامك الجديد. كل شيء تم تحديثه الآن ليعمل بأفضل أداء. اسألني أي شيء!</div>
     </div>
 
-    <div class="bottom-ui">
-        <div class="input-bar">
-            <input type="text" id="masterInput" placeholder="استخدم الكيبورد..." readonly>
-            <button onclick="sendToAI()" style="background:var(--neon); border:none; width:45px; height:45px; border-radius:50%; color:#000;"><i class="fas fa-paper-plane"></i></button>
-        </div>
-
-        <div class="cyber-clavier">
-            <div class="key" onclick="k('أ')">أ</div><div class="key" onclick="k('ب')">ب</div><div class="key" onclick="k('ت')">ت</div><div class="key" onclick="k('ث')">ث</div><div class="key" onclick="k('ج')">ج</div><div class="key" onclick="k('ح')">ح</div><div class="key" onclick="k('خ')">خ</div><div class="key" onclick="k('د')">د</div><div class="key" onclick="k('ذ')">ذ</div><div class="key" onclick="k('ر')">ر</div>
-            <div class="key" onclick="k('ز')">ز</div><div class="key" onclick="k('س')">س</div><div class="key" onclick="k('ش')">ش</div><div class="key" onclick="k('ص')">ص</div><div class="key" onclick="k('ض')">ض</div><div class="key" onclick="k('ط')">ط</div><div class="key" onclick="k('ظ')">ظ</div><div class="key" onclick="k('ع')">ع</div><div class="key" onclick="k('غ')">غ</div><div class="key" onclick="k('ف')">ف</div>
-            <div class="key wide" onclick="del()">حذف</div>
-            <div class="key space" onclick="k(' ')">SPACE</div>
-            <div class="key wide" onclick="sendToAI()">إرسال</div>
-        </div>
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="اكتب سؤالك هنا..." autocomplete="off">
+        <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
     </div>
 
     <script>
-        const KEY = "AIzaSyCnNPqeYw3Soht8PGKlMpv_lbruwUhQbJs";
-        const input = document.getElementById('masterInput');
-        const flow = document.getElementById('chat-flow');
+        // مفتاحك الذي استخرجناه من الصورة
+        const API_KEY = "AIzaSyCnNPqeYw3Soht8PGKlMpv_lbruwUhQbJs";
 
-        function k(c) { input.value += c; }
-        function del() { input.value = input.value.slice(0, -1); }
+        async function sendMessage() {
+            const inputField = document.getElementById('userInput');
+            const chatWindow = document.getElementById('chat-window');
+            const message = inputField.value.trim();
 
-        async function sendToAI() {
-            const prompt = input.value;
-            if(!prompt) return;
+            if (!message) return;
 
-            flow.innerHTML += `<div class="bubble user">${prompt}</div>`;
-            input.value = "";
-            flow.scrollTop = flow.scrollHeight;
+            // إضافة رسالة المستخدم للشاشة
+            chatWindow.innerHTML += `<div class="msg user">${message}</div>`;
+            inputField.value = "";
+            chatWindow.scrollTop = chatWindow.scrollHeight;
 
-            const aiMsg = document.createElement('div');
-            aiMsg.className = "bubble ai";
-            aiMsg.innerText = "جاري الرد...";
-            flow.appendChild(aiMsg);
+            // إضافة رسالة مؤقتة للذكاء الاصطناعي
+            const loadingMsg = document.createElement('div');
+            loadingMsg.className = "msg ai";
+            loadingMsg.innerText = "جاري المعالجة...";
+            chatWindow.appendChild(loadingMsg);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
 
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY}`, {
+                // الاتصال بـ Gemini 1.5 Flash
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({contents: [{parts: [{text: prompt}]}]})
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: message }] }]
+                    })
                 });
-                const data = await res.json();
-                aiMsg.innerHTML = data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
-            } catch (e) { aiMsg.innerText = "حدث خطأ في الاتصال."; }
-            flow.scrollTop = flow.scrollHeight;
+
+                const data = await response.json();
+
+                if (data.candidates && data.candidates[0].content) {
+                    const aiText = data.candidates[0].content.parts[0].text;
+                    loadingMsg.innerHTML = aiText.replace(/\n/g, '<br>');
+                } else if (data.error) {
+                    loadingMsg.innerText = "تنبيه: " + data.error.message;
+                } else {
+                    loadingMsg.innerText = "حدث استثناء غير معروف. حاول مجدداً.";
+                }
+            } catch (error) {
+                loadingMsg.innerText = "فشل الاتصال. تأكد من الإنترنت.";
+            }
+            chatWindow.scrollTop = chatWindow.scrollHeight;
         }
+
+        // إرسال بالضغط على زر Enter
+        document.getElementById('userInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') sendMessage();
+        });
     </script>
 </body>
 </html>
